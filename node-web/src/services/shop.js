@@ -1,10 +1,4 @@
-// 店铺数据
-const memoryStorage = {
-    '1001': { name: '良品铺子' },
-    '1002': { name: '来伊份' },
-    '1003': { name: '三只松鼠' },
-    '1004': { name: '百草味' },
-};
+const { Shop } = require('../models');
 
 // 延时模拟
 async function delay (ms = 200) {
@@ -13,54 +7,45 @@ async function delay (ms = 200) {
 
 class ShopService {
     async init () {
-        await delay();
     }
 
     // 创建店铺
     async create({values}) {
-        await delay();
-
-        const id = String(
-            1 + Object.keys(memoryStorage).reduce((m, id) => Math.max(m, id), -Infinity)
-        )
-
-        return { id, ...(memoryStorage[id] = values) };
+        const newShop = await Shop.create(values);
+        return newShop;
     }
 
     async find ({id, pageIndex = 0, pageSize = 10}) {
-        await delay();
-
         if (id) {
-            return [memoryStorage[id]].filter(Boolean);
+            return [await Shop.findByPk(id)];
         }
 
-        return Object.keys(memoryStorage)
-                .slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
-                .map((id) => ({ id, ...memoryStorage[id] }));
+        const list = await Shop.findAll({
+            offset: pageIndex * pageSize,
+            limit: pageSize,
+        });
+        return list
     }
 
     async modify ({id, values}) {
-        await delay();
-
-        const target = memoryStorage[id];
+        const target = await Shop.findByPk(id);
 
         if (!target) {
             return null;
         }
+        Object.assign(target, values);
 
-        return Object.assign(target, values);
+        return await target.save();
     }
 
     async remove ({id}) {
-        await delay();
-
-        const target = memoryStorage[id];
+        const target = await Shop.findByPk(id);
 
         if (!target) {
             return null;
         }
 
-        return delete memoryStorage[id];
+        return target.destroy();
     }
 }
 
