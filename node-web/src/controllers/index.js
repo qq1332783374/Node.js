@@ -2,6 +2,7 @@ const {Router} = require('express');
 const shopControllers = require('./shop');
 const chaosController = require('./chaos');
 const healthController = require('./health');
+const loginController = require('./login');
 
 module.exports = async function initControllers () {
     const router = Router();
@@ -12,6 +13,8 @@ module.exports = async function initControllers () {
     router.use('/api/chaos', await chaosController());
     // 健康检查
     router.use('/api/health', await healthController());
+    // 登录路由
+    router.use('/api/login', await loginController());
 
     return router;
 }
