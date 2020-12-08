@@ -1,51 +1,43 @@
 const { Shop } = require('../models');
 
-// 延时模拟
-async function delay (ms = 200) {
-    await new Promise((r) => setTimeout(r, ms));
-}
-
 class ShopService {
-    async init () {
-    }
+    async init() {}
 
-    // 创建店铺
-    async create({values}) {
-        const newShop = await Shop.create(values);
-        return newShop;
-    }
-
-    async find ({id, pageIndex = 0, pageSize = 10}) {
+    async find({ id, pageIndex = 0, pageSize = 10, logging }) {
         if (id) {
-            return [await Shop.findByPk(id)];
+            return [await Shop.findByPk(id, { logging })];
         }
 
-        const list = await Shop.findAll({
+        return await Shop.findAll({
             offset: pageIndex * pageSize,
             limit: pageSize,
+            logging,
         });
-        return list
     }
 
-    async modify ({id, values}) {
+    async modify({ id, values, logging }) {
         const target = await Shop.findByPk(id);
 
         if (!target) {
             return null;
         }
+
         Object.assign(target, values);
-
-        return await target.save();
+        return await target.save({ logging });
     }
 
-    async remove ({id}) {
+    async remove({ id, logging }) {
         const target = await Shop.findByPk(id);
 
         if (!target) {
-            return null;
+            return false;
         }
 
-        return target.destroy();
+        return target.destroy({ logging });
+    }
+
+    async create({ values, logging }) {
+        return await Shop.create(values, { logging });
     }
 }
 
@@ -56,5 +48,5 @@ module.exports = async function () {
         service = new ShopService();
         await service.init();
     }
-    return service
-}
+    return service;
+};

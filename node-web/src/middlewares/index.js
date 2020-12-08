@@ -7,10 +7,12 @@ const sessionMiddleware = require('./session');
 const urlnormalizeMiddleware = require('./urlnormalize');
 const loginMiddleware = require('./login');
 const authMiddleware = require('./auth');
+const traceMiddleware = require('./trace');
 const { sessionCookieSecret } = require('../config');
 
 module.exports = async function initMiddlewares() {
     const router = Router();
+    router.use(traceMiddleware());
     router.use(helmet({ contentSecurityPolicy: false }));
     router.use(urlnormalizeMiddleware());
     router.use(cookieParser(sessionCookieSecret));

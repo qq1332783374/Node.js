@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -r ./scripts/env src/server.js",
+    "start": "nodemon -r ./scripts/env src/server.js | bunyan -o short -l info",
     "start:prod": "cross-env NODE_ENV=production node -r ./scripts/env src/server.js",
     "sequelize": "sequelize db:migrate",
     "sequelize:prod": "cross-env NODE_ENV=production sequelize db:migrate",
@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "bunyan": "^1.8.14",
     "connect-session-sequelize": "^6.1.1",
     "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.3",
@@ -25,10 +26,13 @@
     "express-session": "^1.17.1",
     "helmet": "^4.2.0",
     "lodash.merge": "^4.6.2",
+    "morgan": "^1.10.0",
+    "on-finished": "^2.3.0",
     "passport": "^0.4.1",
     "passport-github": "^1.1.0",
     "sequelize": "^5.22.3",
     "sqlite3": "^5.0.0",
+    "uuid": "^8.3.1",
     "yup": "^0.32.5"
   },
   "devDependencies": {
