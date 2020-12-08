@@ -2,6 +2,7 @@
  * 异常处理
  * */
 const { Router } = require('express');
+const cc = require('../utils/cc');
 
 const ASYNC_MS = 800;
 
@@ -14,6 +15,7 @@ class ChaosController {
         router.get('/thunk-error-throw', this.getThunkErrorThrow);
         router.get('/promise-error-handle', this.getPromiseErrorHandle);
         router.get('/promise-error-throw', this.getPromiseErrorThrow);
+        router.get('/promise-error-throw-with-catch', this.getPromiseErrorThrowWithCatch);
         return router;
     }
 
@@ -52,6 +54,12 @@ class ChaosController {
         await new Promise((r) => setTimeout(r, ASYNC_MS));
         throw new Error('Chaos test - promise error throw');
     };
+
+    // 异常被捕获并处理
+    getPromiseErrorThrowWithCatch = cc(async (req, res, next) => {
+        await new Promise((r) => setTimeout(r, ASYNC_MS));
+        throw new Error('Chaos test - promise error throw with catch');
+    });
 }
 
 module.exports = async () => {

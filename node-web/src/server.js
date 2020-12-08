@@ -18,4 +18,10 @@ async function bootstrap () {
     console.log(`> Started on port ${port}`);
 }
 
+// 监听未捕获的 Promise 异常，直接退出进程
+process.on('unhandledRejection', (err) => {
+    console.error(err);
+    process.exit(1);
+})
+
 void bootstrap();
