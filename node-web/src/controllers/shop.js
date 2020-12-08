@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const bodyParser = require('body-parser');
 const shopService = require('../services/shop.js');
 const {createShopFormSchema} = require('../moulds/ShopForm');
 
@@ -15,6 +16,7 @@ class ShopControllers {
         router.get('/:shopId', this.getOne);
         router.put('/:shopId', this.put);
         router.delete('/:shopId', this.delete);
+        router.post('/', bodyParser.urlencoded({extended: false}), this.post);
 
         return router;
     }
@@ -36,6 +38,21 @@ class ShopControllers {
         shopList.length 
         ? res.send({success: true, data: shopList})
         : res.status(404).send({success: false, data: null})
+    }
+
+    post = async (req, res) => {
+        const {name} = req.body;
+
+        try {
+            await createShopFormSchema().validate({name})
+        } catch (e) {
+            res.status(400).send({ success: false, message: e.message });
+            return
+        }
+
+        const shopInfo = await this.shopService.create({values: name});
+
+        res.send({success: true, data: shopInfo});
     }
 
     put = async (req, res) => {

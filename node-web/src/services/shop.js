@@ -16,6 +16,17 @@ class ShopService {
         await delay();
     }
 
+    // 创建店铺
+    async create({values}) {
+        await delay();
+
+        const id = String(
+            1 + Object.keys(memoryStorage).reduce((m, id) => Math.max(m, id), -Infinity)
+        )
+
+        return { id, ...(memoryStorage[id] = values) };
+    }
+
     async find ({id, pageIndex = 0, pageSize = 10}) {
         await delay();
 
