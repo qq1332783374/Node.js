@@ -7,7 +7,7 @@ const Yup = require('yup');
 /**
  * 创建表单校验模型
  */
-exports.createShopFormScheam = () => Yup.object({
+exports.createShopFormSchema = () => Yup.object({
     name: Yup.string()
     .required('店铺名不能为空')
     .min(3, '店铺名称至少3个字符')

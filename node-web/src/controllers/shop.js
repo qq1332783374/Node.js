@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const shopService = require('../services/shop.js');
-const {createShopFormScheam} = require('../moulds/ShopForm');
+const {createShopFormSchema} = require('../moulds/ShopForm');
 
 class ShopControllers {
     shopService;
@@ -31,7 +31,6 @@ class ShopControllers {
 
     getOne = async (req, res)  => {
         const {shopId} = req.params;
-        console.log('shopId', shopId);
         const shopList = await this.shopService.find({id: shopId});
 
         shopList.length 
@@ -45,7 +44,7 @@ class ShopControllers {
 
         // 提交过来的数据效验
         try {
-            await createShopFormScheam().validate({name});
+            await createShopFormSchema().validate({name});
         } catch (e) {
             res.status(400).send({ success: false, message: e.message });
             return
