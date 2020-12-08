@@ -71,6 +71,7 @@ export async function handleCreateShop(e) {
     await fetch('/api/shop', {
         method: 'POST',
         headers: {
+            'Csrf-Token': __CSRF_TOKEN__,
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: `name=${encodeURIComponent(name)}`
@@ -94,7 +95,10 @@ export async function handleModifyShopInfo (e) {
         return;
     }
     await fetch(`/api/shop/${shopId}?name=${encodeURIComponent(name)}`, {
-        method: 'PUT'
+        method: 'PUT',
+        headers: {
+            'Csrf-Token': __CSRF_TOKEN__,
+        },
     });
     await refreshShopList();
 }
@@ -105,6 +109,11 @@ export async function handleModifyShopInfo (e) {
  */
 export async function handleRemoveShopInfo (e) {
     const shopId = e.target.parentNode.dataset.shopId;
-    await fetch(`/api/shop/${shopId}`, { method: 'DELETE' });
+    await fetch(`/api/shop/${shopId}`, {
+        method: 'DELETE',
+        headers: {
+            'Csrf-Token': __CSRF_TOKEN__,
+        },
+    });
     await refreshShopList();
 }

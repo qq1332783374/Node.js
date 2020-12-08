@@ -35,7 +35,7 @@ function errorHandler (err, req, res, next) {
     // 打印异常
     console.error(err);
     // 重定向到错误页面
-    req.redirect('/500.html');
+    res.redirect('/500.html');
 }
 
 // 监听未捕获的 Promise 异常，直接退出进程

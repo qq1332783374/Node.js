@@ -1,20 +1,16 @@
-const {Router} = require('express');
-const shopControllers = require('./shop');
+const { Router } = require('express');
+const shopController = require('./shop');
 const chaosController = require('./chaos');
 const healthController = require('./health');
 const loginController = require('./login');
+const csrfController = require('./csrf');
 
-module.exports = async function initControllers () {
+module.exports = async function initControllers() {
     const router = Router();
-
-    // 商品路由
-    router.use('/api/shop', await shopControllers());
-    // 错误异常处理路由
+    router.use('/api/shop', await shopController());
     router.use('/api/chaos', await chaosController());
-    // 健康检查
     router.use('/api/health', await healthController());
-    // 登录路由
     router.use('/api/login', await loginController());
-
+    router.use('/api/csrf', await csrfController());
     return router;
-}
+};

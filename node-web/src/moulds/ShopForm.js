@@ -11,5 +11,5 @@ exports.createShopFormSchema = () => Yup.object({
     name: Yup.string()
     .required('店铺名不能为空')
     .min(3, '店铺名称至少3个字符')
-    .max(20, '店铺名称不能大于20个字符')
+    .max(120, '店铺名称不能大于120个字符')
 })
