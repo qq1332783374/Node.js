@@ -50,7 +50,7 @@ class ShopControllers {
             return
         }
 
-        const shopInfo = await this.shopService.create({values: name});
+        const shopInfo = await this.shopService.create({ values: { name } });
 
         res.send({success: true, data: shopInfo});
     }
