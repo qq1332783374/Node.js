@@ -7,15 +7,14 @@ const sessionMiddleware = require('./session');
 const urlnormalizeMiddleware = require('./urlnormalize');
 const loginMiddleware = require('./login');
 const authMiddleware = require('./auth');
-
-const secret = '842d918ced1888c65a650f993077c3d36b8f114d';
+const { sessionCookieSecret } = require('../config');
 
 module.exports = async function initMiddlewares() {
     const router = Router();
-    router.use(helmet({contentSecurityPolicy:false }));
+    router.use(helmet({ contentSecurityPolicy: false }));
     router.use(urlnormalizeMiddleware());
-    router.use(cookieParser(secret));
-    router.use(sessionMiddleware(secret));
+    router.use(cookieParser(sessionCookieSecret));
+    router.use(sessionMiddleware());
     router.use(loginMiddleware());
     router.use(authMiddleware());
     router.use(bodyParser.urlencoded({ extended: false }), csurf());
