@@ -22,6 +22,13 @@ export async function refreshShopList () {
     document.querySelector('#app').innerHTML = `
         <h1>店铺列表：</h1>
         <ul class="shop-list">${items.join('')}</ul>
+        <h1>新增店铺：</h1>
+        <form action="/api/shop" method="post">
+            <label for="shopName">新的店铺名：</label>
+            <input type="text" id="shopName" name="name">
+            <button type="submit" data-type="create">确定创建</button>
+            <span class="error"></span>
+        </form>
     `;
 }
 
@@ -29,7 +36,6 @@ export async function refreshShopList () {
  * 事件绑定
  */
 export async function bindShopInfoEvents () {
-    console.log('事件绑定');
     document.querySelector('#app').addEventListener('click', async function (e) {
         e.preventDefault();
         console.log('e.target.dataset.type', e.target.dataset.type);
@@ -40,8 +46,38 @@ export async function bindShopInfoEvents () {
             case 'remove':
                 await handleRemoveShopInfo(e);
                 break;
+            case 'create':
+                await handleCreateShop(e);
+                break;
         }
     })
+}
+
+/**
+ * 创建商铺
+ * @returns {Promise<void>}
+ */
+export async function handleCreateShop(e) {
+    e.preventDefault();
+    const name = e.target.parentElement.querySelector('input[name=name]').value;
+
+    try {
+        await createShopFormSchema().validate({name})
+    } catch (error) {
+        e.target.parentElement.querySelector('.error').innerHTML = error.message;
+        return
+    }
+
+    await fetch('/api/shop', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `name=${encodeURIComponent(name)}`
+    });
+
+    // 更新商品列表
+    await refreshShopList();
 }
 
 /**
