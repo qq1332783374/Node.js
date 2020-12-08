@@ -1,7 +1,8 @@
 const { Router } = require('express');
 const bodyParser = require('body-parser');
-const shopService = require('../services/shop.js');
+const shopService = require('../services/shop');
 const {createShopFormSchema} = require('../moulds/ShopForm');
+const cc = require('../utils/cc');
 
 class ShopControllers {
     shopService;
@@ -21,7 +22,7 @@ class ShopControllers {
         return router;
     }
 
-    getAll =  async (req, res) => {
+    getAll = cc(async (req, res) => {
         const {pageIndex, pageSize} = req.query;
         const shopList = await this.shopService.find({pageIndex, pageSize});
 
@@ -29,18 +30,18 @@ class ShopControllers {
             success: true,
             data: shopList
         });
-    }
+    })
 
-    getOne = async (req, res)  => {
+    getOne = cc(async (req, res)  => {
         const {shopId} = req.params;
         const shopList = await this.shopService.find({id: shopId});
 
-        shopList.length 
-        ? res.send({success: true, data: shopList})
-        : res.status(404).send({success: false, data: null})
-    }
+        shopList.length
+            ? res.send({success: true, data: shopList})
+            : res.status(404).send({success: false, data: null})
+    })
 
-    post = async (req, res) => {
+    post = cc(async (req, res) => {
         const {name} = req.body;
 
         try {
@@ -53,9 +54,9 @@ class ShopControllers {
         const shopInfo = await this.shopService.create({ values: { name } });
 
         res.send({success: true, data: shopInfo});
-    }
+    })
 
-    put = async (req, res) => {
+    put = cc(async (req, res) => {
         const {shopId} = req.params;
         const {name} = req.query;
 
@@ -72,12 +73,12 @@ class ShopControllers {
             values: {name}
         });
 
-        Object.keys(shopInfo).length 
-        ? res.send({success: true, data: shopInfo})
-        : res.status(404).send({success: false, data: null})
-    }
+        Object.keys(shopInfo).length
+            ? res.send({success: true, data: shopInfo})
+            : res.status(404).send({success: false, data: null})
+    })
 
-    delete = async (req, res) => {
+    delete = cc(async (req, res) => {
         const {shopId} = req.params;
         const success = await this.shopService.remove({id: shopId});
 
@@ -85,7 +86,7 @@ class ShopControllers {
             res.status(404)
         }
         res.send({success: true})
-    }
+    })
 }
 
 module.exports = async () => {
