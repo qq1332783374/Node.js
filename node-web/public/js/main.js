@@ -1,3 +1,7 @@
+// 引入效验规则
+import '/moulds/ShopForm.js';
+const { createShopFormSchema } = window.moulds;
+
 /**
  * dom 节点初始化
  */
@@ -12,6 +16,7 @@ export async function refreshShopList () {
             <input type="text" placeholder="输入新的店铺名称" />
             <a href="#" data-type="modify">确认修改</a>
             <a href="#" data-type="remove">删除店铺</a>
+            <div class="error"></div>
         </li>
     `)
     document.querySelector('#app').innerHTML = `
@@ -46,9 +51,11 @@ export async function bindShopInfoEvents () {
 export async function handleModifyShopInfo (e) {
     const shopId = e.target.parentNode.dataset.shopId;
     const name = e.target.parentElement.querySelector('input').value;
-    if (!name) {
-        alert('店铺名不能为空！');
-        return
+    try {
+        await createShopFormSchema().validate({ name });
+    } catch (error) {
+        e.target.parentElement.querySelector('.error').innerHTML = error.message;
+        return;
     }
     await fetch(`/api/shop/${shopId}?name=${encodeURIComponent(name)}`, {
         method: 'PUT'
