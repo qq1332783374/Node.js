@@ -8,8 +8,9 @@
     "start:prod": "cross-env NODE_ENV=production node -r ./scripts/env src/server.js",
     "sequelize": "sequelize db:migrate",
     "sequelize:prod": "cross-env NODE_ENV=production sequelize db:migrate",
+    "sequelize:test": "cross-env NODE_ENV=test sequelize db:migrate",
     "build:yup": "rollup node_modules/yup -o src/moulds/yup.js -p @rollup/plugin-node-resolve,@rollup/plugin-commonjs,rollup-plugin-terser -f umd -n 'yup'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -38,9 +39,14 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
+    "beautify-benchmark": "^0.2.4",
+    "benchmark": "^2.1.4",
+    "execa": "^5.0.0",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.6",
     "rollup": "^2.34.2",
     "rollup-plugin-terser": "^7.0.2",
-    "sequelize-cli": "^6.2.0"
+    "sequelize-cli": "^6.2.0",
+    "supertest": "^6.0.1"
   }
 }

@@ -48,6 +48,7 @@ const config = {
     test: {
         db: {
             logging: false,
+            storage: 'database/dev.db',
         },
     },
 
