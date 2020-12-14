@@ -1,70 +1,51 @@
-import {homedir} from 'os';
-import {join} from 'path';
-import {Command} from 'commander/typings';
 import dayjs from 'dayjs';
-import fs from 'fs'
-import chalk from 'chalk';
-import inquirer from 'inquirer';
-
-const home: string = process.env.HOME || homedir();
-const dbPath: string = join(home, '.todo');
-
-interface todoItem {
-    id: number,
-    name: string,
-    status: string,
-    createDate: string
-}
+import TodoService from '../services/todo';
+import {Command} from 'commander/typings';
+import {todoItem} from '../typings';
 
 class TodoCommander {
-    add (item: Command):void {
-        try {
-            // 1. 读取上次添加的任务内容
-            const db = fs.readFileSync(dbPath, {flag: 'a+'});
-            const todoList: Array<todoItem> = JSON.parse(db.toString() || '[]');
-            
-            // 2. 新增的任务
-            const inputList = item.args;
-
-            if (!inputList.length) {return console.log(chalk.redBright('请输入代办事项'))}
-
-            inputList.forEach(todo => {
-                let obj: todoItem = {
-                    id: Math.ceil(Math.random() * 10000),
-                    name: todo,
-                    status: '未完成',
-                    createDate: dayjs().format('YYYY-MM-DD HH:mm:ss')
-                };
-                todoList.push(obj);
-            })
-
-            // 3. 重新写入
-            fs.writeFileSync(dbPath, JSON.stringify(todoList));
-            console.log(chalk.greenBright('添加成功'));
-        } catch (e) {
-            console.log(chalk.redBright(e));
+    TodoService: any;
+    async init () {
+        this.TodoService = await TodoService();
+        return {
+            add: this.add,
+            clear: this.clear,
+            showAll: this.showAll
         }
     }
+
+    add = async (item: Command) => {
+        // 1. 新增的任务
+        const inputList = item.args;
+
+        if (!inputList.length) {return console.log('请输入代办事项')}
+
+        inputList.forEach(todo => {
+            const id: number = Math.ceil(Math.random() * 10000)
+            let obj: todoItem = {
+                id: id,
+                name: todo,
+                value: id.toString(),
+                createDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                updateTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
+            };
+            this.TodoService.add(obj);
+        })
+
+        // 2. 重新写入
+        await this.TodoService.updateList();
+    }
     
-    clear ():void {
-        inquirer
-            .prompt({
-                type: 'confirm',
-                name: 'clearAll',
-                message: '是否清除全部代办事项'
-            }).then(res => {
-                // 清除全部
-                if (res.clearAll) {
-                    fs.writeFileSync(dbPath, JSON.stringify([]));
-                    return console.log(chalk.greenBright('清除成功'));
-                }
-            }).catch(e => {
-                console.log(e);
-            })
+    clear = async () => {
+        await this.TodoService.clear();
+    }
+
+    showAll = async () => {
+        await this.TodoService.showAll();
     }
 }
 
-
-const c = new TodoCommander();
-
-export default c
+export default async () => {
+    const c = new TodoCommander();
+    return await c.init();
+}
