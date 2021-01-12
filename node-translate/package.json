@@ -1,0 +1,24 @@
+{
+  "name": "node-translate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/t-trans",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc -w",
+    "build": "tsc -b"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chalk": "^4.1.0",
+    "commander": "^6.2.1",
+    "md5": "^2.3.0",
+    "ora": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/md5": "^2.2.1"
+  }
+}
